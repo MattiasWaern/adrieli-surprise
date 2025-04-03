@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Love Letter Surprise</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(#ffeef2, #e6f7ff);
+      font-family: 'Georgia', serif;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .letter-wrapper {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      background: #fff0f5;
+      border: 2px solid #ffb6c1;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 1s ease;
+      z-index: 10;
+    }
+
+    .letter-wrapper.ripped {
+      transform: rotateX(90deg);
+    }
+
+    .rip-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #ff6f91;
+      z-index: 2;
+    }
+
+    .butterfly {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: url('https://cdn-icons-png.flaticon.com/512/616/616408.png') no-repeat center/contain;
+      opacity: 0;
+      animation: flutter 5s ease-in-out forwards;
+    }
+
+    @keyframes flutter {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate(calc(-100px + 200px * random()), -300px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    .message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #d46a92;
+      transition: opacity 2s ease;
+      z-index: 5;
+    }
+
+    .show-message {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="letter-wrapper" onclick="openLetter()">
+    <div class="rip-line"></div>
+  </div>
+  <div class="message" id="message">Vi ses vid fjärlishuset imorgon :D 🦋</div>
+
+  <script>
+    function createButterflies() {
+      const letter = document.querySelector('.letter-wrapper');
+      const rect = letter.getBoundingClientRect();
+
+      for (let i = 0; i < 10; i++) {
+        const butterfly = document.createElement('div');
+        butterfly.classList.add('butterfly');
+
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+
+        butterfly.style.left = `${x}px`;
+        butterfly.style.top = `${y}px`;
+
+        const offsetX = (Math.random() - 0.5) * 200;
+        const offsetY = -Math.random() * 300;
+        const rotate = 360 + Math.random() * 360;
+        const delay = Math.random() * 2;
+
+        butterfly.style.animation = `flutter 5s ease-in-out forwards`;
+        butterfly.style.animationDelay = `${delay}s`;
+
+        butterfly.animate([
+          { transform: 'translate(0, 0) rotate(0deg)', opacity: 0 },
+          { transform: `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`, opacity: 1 },
+          { transform: `translate(${offsetX}px, ${offsetY - 100}px) rotate(${rotate + 180}deg)`, opacity: 0 }
+        ], {
+          duration: 5000,
+          delay: delay * 1000,
+          fill: 'forwards'
+        });
+
+        document.body.appendChild(butterfly);
+      }
+    }
+
+    function openLetter() {
+      const letter = document.querySelector('.letter-wrapper');
+      const message = document.getElementById('message');
+      letter.classList.add('ripped');
+      createButterflies();
+      setTimeout(() => {
+        message.classList.add('show-message');
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
